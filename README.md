@@ -17,10 +17,13 @@ Um sistema Web de gerenciamento de tarefas, conectando empresas e funcionários!
 **Linguagens e aplicações**
 
 <li>Laravel</li>
-<li>CSS</li>
-<li>React.js</li>
+<li>AngularJs</li>
 <li>Docker</li>
 <li>PHPUnit</li>
-<li>Postman</li>
-<li>Stripe</li>
+<li>Stripe Gateway</li>
 <li>SQL Server</li>
+<li>AWS</li>
+<li>Terraform</li>
+<li>Redis</li>
+<li>RabbitMQ</li>
+
