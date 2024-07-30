@@ -1,55 +1,57 @@
-# syntax=docker/dockerfile:1
+FROM php:8.1-apache
 
-FROM composer:lts as deps
-
-WORKDIR /app
-
-COPY . .
-
-RUN --mount=type=cache,target=/tmp/cache \
-    composer install --no-dev --no-interaction
-
-FROM php:8.1-apache as final
-
+# 1. Install development packages and clean up apt cache.
 RUN apt-get update && apt-get install -y \
-    libfreetype-dev \
-    libjpeg62-turbo-dev \
-    libpng-dev && \
-    pecl install redis-5.3.7 && \
-    pecl install xdebug-3.2.1 && \
-    pecl install mongodb-1.19.3 && \
-    docker-php-ext-enable redis xdebug mongodb
+    curl \
+    g++ \
+    git \
+    libbz2-dev \
+    libfreetype6-dev \
+    libicu-dev \
+    libjpeg-dev \
+    libmcrypt-dev \
+    libpng-dev \
+    libreadline-dev \
+    sudo \
+    unzip \
+    zip \
+ && rm -rf /var/lib/apt/lists/*
 
-RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+# 2. Apache configs + document root.
+RUN echo "ServerName laravel-app.local" >> /etc/apache2/apache2.conf
 
-COPY --from=deps /app /var/www/html
+ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
-# Configurar o Apache para servir a aplicação Laravel
-RUN cat > /etc/apache2/sites-available/000-default.conf <<EOF
-<VirtualHost *:80>
-    ServerName localhost
-    DocumentRoot /var/www/html/public
-    <Directory /var/www/html/public>
-        Options Indexes FollowSymLinks
-        AllowOverride All
-        Require all granted
-        DirectoryIndex index.php
-    </Directory>
-</VirtualHost>
-EOF
+# 3. mod_rewrite for URL rewrite and mod_headers for .htaccess extra headers like Access-Control-Allow-Origin-
+RUN a2enmod rewrite headers
 
-# Habilitar o módulo de reescrita do Apache
-RUN a2enmod rewrite
+# 4. Start with base PHP config, then add extensions.
+RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
 
-# Ajuste de permissões
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
-    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+RUN pecl install redis-5.3.7 && \
+pecl install mongodb-1.19.3 && \
+docker-php-ext-enable redis mongodb
 
-WORKDIR /var/www/html
+RUN docker-php-ext-install \
+    bcmath \
+    bz2 \
+    calendar \
+    iconv \
+    intl \
+    mbstring \
+    opcache \
+    pdo_mysql \
+    zip
 
-RUN cp .env.example .env
-RUN php artisan key:generate
+# 5. Composer.
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-EXPOSE 80
-
-CMD ["apache2-foreground"]
+# 6. We need a user with the same UID/GID as the host user
+# so when we execute CLI commands, all the host file's permissions and ownership remain intact.
+# Otherwise commands from inside the container would create root-owned files and directories.
+ARG uid
+RUN useradd -G www-data,root -u $uid -d /home/devuser devuser
+RUN mkdir -p /home/devuser/.composer && \
+    chown -R devuser:devuser /home/devuser

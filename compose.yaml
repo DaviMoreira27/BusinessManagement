@@ -1,26 +1,49 @@
 services:
-  server:
+  laravel-app:
     build:
-      context: .
+      context: "."
+      args:
+        uid: ${UID}
+    container_name: laravel-app
     ports:
-      - 8080:80
+      - 8000:80
+    environment:
+      - APACHE_RUN_USER=#1000
+      - APACHE_RUN_GROUP=#1000
+    volumes:
+      - .:/var/www/html
     depends_on:
       - redis
       - mongo
     env_file:
       - .env
+    networks:
+      backend:
+        aliases:
+          - app
 
   redis:
     image: redis:latest
     ports:
       - 6379:6379
-
+    networks:
+      backend:
+        aliases:
+          - redis-cache-db
   mongo:
     image: mongo:latest
     ports:
       - 27017:27017
     volumes:
       - mongo-data:/data/db
+    networks:
+      backend:
+        aliases:
+          - mongo-db
 
 volumes:
   mongo-data:
+
+networks:
+  backend:
+    name: backend-network
