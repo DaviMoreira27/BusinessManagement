@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y \
     libmcrypt-dev \
     libpng-dev \
     libreadline-dev \
+    libzip-dev \
     sudo \
     unzip \
     zip \
@@ -40,7 +41,6 @@ RUN docker-php-ext-install \
     calendar \
     iconv \
     intl \
-    mbstring \
     opcache \
     pdo_mysql \
     zip
@@ -51,7 +51,3 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # 6. We need a user with the same UID/GID as the host user
 # so when we execute CLI commands, all the host file's permissions and ownership remain intact.
 # Otherwise commands from inside the container would create root-owned files and directories.
-ARG uid
-RUN useradd -G www-data,root -u $uid -d /home/devuser devuser
-RUN mkdir -p /home/devuser/.composer && \
-    chown -R devuser:devuser /home/devuser
