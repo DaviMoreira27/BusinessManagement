@@ -1,7 +1,9 @@
 name: App Deployment
 run-name: ${{ github.actor }} is deploying the application
 on:
-  pull_request:
+  push:
+    branches: [main]
+  pull-requests:
     branches: [main]
 
 jobs:
@@ -25,23 +27,3 @@ jobs:
         run: |
           docker-compose exec -T laravel-app sh -c "./vendor/bin/phpunit --verbose tests"
 
-  deploy:
-    needs: [app-setup]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout source code
-        uses: actions/checkout@v2
-
-      - name: Generate deployment package
-        run: zip -r deploy.zip . -x '*.git*'
-
-      - name: Deploy to EB
-        uses: einaregilsson/beanstalk-deploy@v20
-        with:
-          aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
-          aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}
-          application_name: Business-management-env 
-          environment_name: Business-management-env 
-          version_label: 1.0
-          region: "sa-east-1"
-          deployment_package: deploy.zip
