@@ -20,10 +20,10 @@ jobs:
 
       - name: Build and run Docker container
         run: |
-          docker-compose up --build -d
-          docker-compose exec -T laravel-app sh -c "php artisan key:generate && php artisan migrate"
+          docker compose up --build -d
+          docker compose exec -T laravel-app sh -c "php artisan key:generate && php artisan migrate"
       
       - name: Run PHP Unit testing
         run: |
-          docker-compose exec -T laravel-app sh -c "./vendor/bin/phpunit --verbose tests"
+          docker compose exec -T laravel-app sh -c "./vendor/bin/phpunit --verbose tests"
 
