@@ -3,7 +3,7 @@ run-name: ${{ github.actor }} is deploying the application
 on:
   push:
     branches: [main]
-  pull-request:
+  pull_request:
     branches: [main]
 
 jobs:
