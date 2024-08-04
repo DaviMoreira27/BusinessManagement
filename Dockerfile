@@ -32,7 +32,7 @@ RUN a2enmod rewrite headers
 # 4. Start with base PHP config, then add extensions.
 RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
 
-RUN sudo pecl7 config-set php_ini /etc/php.ini
+# RUN sudo pecl7 config-set php_ini /etc/php.ini
 
 RUN pecl install redis-5.3.7 && \
 pecl install mongodb-1.19.3 && \
