@@ -12,6 +12,7 @@ services:
     environment:
       - APACHE_RUN_USER=#1000
       - APACHE_RUN_GROUP=#1000
+      - MONGODB_HOST=mongodb
     volumes:
       - .:/var/www/html
     depends_on:
@@ -37,8 +38,6 @@ services:
     image: mongo:latest
     ports:
       - 27017:27017
-    bindIp: 
-      - 0.0.0.0
     volumes:
       - mongo-data:/data/db
     environment:
