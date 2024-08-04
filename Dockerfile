@@ -34,6 +34,8 @@ RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
 
 # RUN sudo pecl7 config-set php_ini /etc/php.ini
 
+RUN apt-get install -y libcurl4-openssl-dev pkg-config libssl-dev
+
 RUN pecl install redis-5.3.7 && \
 pecl install mongodb-1.19.3 && \
 docker-php-ext-enable redis mongodb
