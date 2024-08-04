@@ -17,15 +17,6 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.1'
-      - name: Start MongoDB
-        uses: supercharge/mongodb-github-action@1.11.0
-        with:
-          mongodb-version: '7.0'
-      - name: Set up Redis
-        uses: shogo82148/actions-setup-redis@v1
-        with:
-          redis-version: "7.x"
-      - run: redis-cli ping    
       - name: Build and run Docker container
         run: |
           cp .env.example .env
