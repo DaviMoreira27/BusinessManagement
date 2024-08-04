@@ -47,4 +47,3 @@ volumes:
 networks:
   backend:
     name: backend-network
-command: sh -c "composer install"
