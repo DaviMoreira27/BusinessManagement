@@ -15,6 +15,8 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     sudo \
     unzip \
+    libcurl4-openssl-dev \
+    libssl-dev \
     zip \
  && rm -rf /var/lib/apt/lists/*
 
@@ -32,9 +34,6 @@ RUN a2enmod rewrite headers
 # 4. Start with base PHP config, then add extensions.
 RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
 
-# RUN sudo pecl7 config-set php_ini /etc/php.ini
-
-RUN apt-get install openssl
 
 RUN pecl install redis-5.3.7 && \
 pecl install mongodb-1.19.3 && \
