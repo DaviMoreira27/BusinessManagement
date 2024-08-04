@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y \
     zip \
  && rm -rf /var/lib/apt/lists/*
 
-RUN sudo apt-get install -y libcurl4-openssl-dev pkg-config libssl-dev
+RUN sudo apt-get install openssl-devel
 
 # 2. Apache configs + document root.
 RUN echo "ServerName laravel-app.local" >> /etc/apache2/apache2.conf
@@ -32,6 +32,8 @@ RUN a2enmod rewrite headers
 
 # 4. Start with base PHP config, then add extensions.
 RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
+
+RUN sudo pecl7 config-set php_ini /etc/php.ini
 
 RUN pecl install redis-5.3.7 && \
 pecl install mongodb-1.19.3 && \
