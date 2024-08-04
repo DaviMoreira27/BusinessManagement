@@ -37,7 +37,6 @@ RUN sudo pecl7 config-set php_ini /etc/php.ini
 
 RUN pecl install redis-5.3.7 && \
 pecl install mongodb-1.19.3 && \
-echo "extension=mongodb.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"` && \
 docker-php-ext-enable redis mongodb
 
 RUN docker-php-ext-install \
