@@ -18,6 +18,8 @@ RUN apt-get update && apt-get install -y \
     zip \
  && rm -rf /var/lib/apt/lists/*
 
+RUN sudo apt-get install -y libcurl4-openssl-dev pkg-config libssl-dev
+
 # 2. Apache configs + document root.
 RUN echo "ServerName laravel-app.local" >> /etc/apache2/apache2.conf
 
