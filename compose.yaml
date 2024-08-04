@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   laravel-app:
     build:
@@ -30,12 +32,16 @@ services:
       backend:
         aliases:
           - redis-cache-db
+
   mongo:
     image: mongo:latest
     ports:
       - 27017:27017
     volumes:
       - mongo-data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
     networks:
       backend:
         aliases:
