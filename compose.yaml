@@ -37,6 +37,8 @@ services:
     image: mongo:latest
     ports:
       - 27017:27017
+    bindIp: 
+      - 0.0.0.0
     volumes:
       - mongo-data:/data/db
     environment:
