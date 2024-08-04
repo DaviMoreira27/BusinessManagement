@@ -15,8 +15,11 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     sudo \
     unzip \
+    libcurl4-openssl-dev \
+    libssl-dev \
     zip \
  && rm -rf /var/lib/apt/lists/*
+
 
 # 2. Apache configs + document root.
 RUN echo "ServerName laravel-app.local" >> /etc/apache2/apache2.conf
@@ -30,6 +33,7 @@ RUN a2enmod rewrite headers
 
 # 4. Start with base PHP config, then add extensions.
 RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
+
 
 RUN pecl install redis-5.3.7 && \
 pecl install mongodb-1.19.3 && \
@@ -47,7 +51,3 @@ RUN docker-php-ext-install \
 
 # 5. Composer.
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# 6. We need a user with the same UID/GID as the host user
-# so when we execute CLI commands, all the host file's permissions and ownership remain intact.
-# Otherwise commands from inside the container would create root-owned files and directories.

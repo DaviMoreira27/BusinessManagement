@@ -1,9 +1,9 @@
-name: App Deployment
-run-name: ${{ github.actor }} is deploying the application
+name: App Building and Testing
+run-name: ${{ github.actor }} is testing the application
 on:
   push:
     branches: [main]
-  pull-request:
+  pull_request:
     branches: [main]
 
 jobs:
@@ -16,14 +16,17 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.x'
-
+          php-version: '8.1'
       - name: Build and run Docker container
         run: |
-          docker-compose up --build -d
-          docker-compose exec -T laravel-app sh -c "php artisan key:generate && php artisan migrate"
+          cp .env.example .env
+          composer install
+          docker compose up --build -d
+      - name: Set key run migrations
+        run: |
+          docker compose exec -T laravel-app sh -c "php artisan key:generate && php artisan migrate"
       
       - name: Run PHP Unit testing
         run: |
-          docker-compose exec -T laravel-app sh -c "./vendor/bin/phpunit --verbose tests"
+          docker compose exec -T laravel-app sh -c "./vendor/bin/phpunit --verbose tests"
 
