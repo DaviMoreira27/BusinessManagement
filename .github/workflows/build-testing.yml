@@ -21,6 +21,7 @@ jobs:
       - name: Build and run Docker container
         run: |
           cp .env.example .env
+          composer install
           docker compose up --build -d
           docker compose exec -T laravel-app sh -c "php artisan key:generate && php artisan migrate"
       
