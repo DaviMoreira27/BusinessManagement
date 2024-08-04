@@ -33,6 +33,7 @@ RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
 
 RUN pecl install redis-5.3.7 && \
 pecl install mongodb-1.19.3 && \
+echo "extension=mongodb.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"` && \
 docker-php-ext-enable redis mongodb
 
 RUN docker-php-ext-install \
@@ -47,5 +48,3 @@ RUN docker-php-ext-install \
 
 # 5. Composer.
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
- 
-RUN composer require mongodb/mongodb
