@@ -9,6 +9,8 @@ on:
 jobs:
   app-setup:
     runs-on: ubuntu-latest
+    env:
+      UID: 1000 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
