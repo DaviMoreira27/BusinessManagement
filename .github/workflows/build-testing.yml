@@ -35,7 +35,7 @@ jobs:
 
       - name: Check MongoDB container logs
         run: |
-          docker compose exec -T mongo sh -c "mongo --eval 'db.serverStatus()'"
+          docker compose exec -T mongo sh -c "mongosh --eval 'db.serverStatus()'"
       
       - name: Set key run migrations
         run: |
