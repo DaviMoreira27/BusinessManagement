@@ -28,7 +28,7 @@ jobs:
       
       - name: Await for MongoDB to start
         run: |
-          until docker compose exec -T mongo sh -c 'mongo --eval "db.runCommand({ ping: 1 })"'; do
+          until docker compose exec -T mongo sh -c 'mongosh --eval "db.runCommand({ ping: 1 })"'; do
             echo "Waiting for MongoDB to be ready..."
             sleep 5
           done
