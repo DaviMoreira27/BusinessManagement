@@ -41,7 +41,7 @@ jobs:
         run: |
           docker compose exec -T laravel-app sh -c "apt-get update && apt-get install -y netcat-openbsd"
           docker compose exec -T laravel-app sh -c "nc -zv mongo-db 27017"
-          docker compose exec -T laravel-app sh -c "printenv | grep MONGO"
+          docker compose exec -T laravel-app sh -c "printenv"
       - name: Set key run migrations
         run: |
           docker compose exec -T laravel-app sh -c "php artisan key:generate && php artisan migrate"
