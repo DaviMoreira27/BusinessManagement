@@ -26,7 +26,7 @@ jobs:
           docker compose up --build -d
       - name: Set key run migrations
         run: |
-          docker compose exec -T laravel-app sh -c "php artisan key:generate && php artisan migrate"
+          docker compose exec -T laravel-app sh -c "php artisan key:generate && php artisan migrate --host=mongo""
       
       - name: Run PHP Unit testing
         run: |
