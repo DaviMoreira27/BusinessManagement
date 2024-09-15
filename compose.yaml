@@ -37,7 +37,7 @@ services:
       - 27017:27017
     volumes:
       - mongo-data:/data/db
-      - ./init-mongo.sh:/docker-entrypoint-initdb.d/init-mongo.sh
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js
     env_file: [.env-mongo, .env]
     networks:
       backend:
