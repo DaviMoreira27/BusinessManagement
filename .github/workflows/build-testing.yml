@@ -33,9 +33,9 @@ jobs:
             sleep 5
           done
 
-      - name: Check MongoDB container logs
-        run: |
-          docker compose exec -T mongo sh -c "mongosh --username rootUser --password rootPassword --authenticationDatabase admin --eval 'db.serverStatus()'"
+      # - name: Check MongoDB container logs
+      #   run: |
+      #     docker compose exec -T mongo sh -c "mongosh --username rootUser --password rootPassword --authenticationDatabase admin --eval 'db.serverStatus()'"
       
       - name: Curl on laravel app
         run: |
