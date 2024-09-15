@@ -39,7 +39,7 @@ jobs:
       
       - name: Curl on laravel app
         run: |
-          docker compose exec -T laravel-app sh -c "apt-get update && apt-get install -y netcat"
+          docker compose exec -T laravel-app sh -c "apt-get update && apt-get install -y netcat-openbsd"
           docker compose exec -T laravel-app sh -c "nc -zv mongo-db 27017"
       - name: Set key run migrations
         run: |
