@@ -23,10 +23,10 @@ jobs:
         run: |
           cp .env.example .env
           composer install
-          docker compose up --build
+          docker compose up --build -d
       - name: Await for mongo and redis to start
         run: |
-          sleep 10
+          sleep 60
       - name: Set key run migrations
         run: |
           docker compose exec -T laravel-app sh -c "php artisan key:generate && php artisan migrate"
