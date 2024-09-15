@@ -26,7 +26,10 @@ jobs:
           docker compose up --build -d
       - name: Await for mongo and redis to start
         run: |
-          sleep 540
+          sleep 60
+      - name: Check MongoDB container logs
+        run: |
+          docker compose exec -T mongo-1 sh -c "mongo --eval 'db.serverStatus()'"
       - name: Set key run migrations
         run: |
           docker compose exec -T laravel-app sh -c "php artisan key:generate && php artisan migrate"
