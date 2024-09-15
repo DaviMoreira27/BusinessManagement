@@ -37,6 +37,8 @@ jobs:
         run: |
           docker compose exec -T mongo sh -c "mongosh --eval 'db.serverStatus()'"
       
+      - name: Curl on laravel app
+        run: docker-compose exec laravel-app sh -c "curl mongo-db:27017"    
       - name: Set key run migrations
         run: |
           docker compose exec -T laravel-app sh -c "php artisan key:generate && php artisan migrate"
