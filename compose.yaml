@@ -39,6 +39,12 @@ services:
       - mongo-data:/data/db
       - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js
     env_file: [.env-mongo, .env]
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.serverStatus()"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
     networks:
       backend:
         aliases:
