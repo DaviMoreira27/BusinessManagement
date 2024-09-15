@@ -35,7 +35,7 @@ jobs:
 
       - name: Check MongoDB container logs
         run: |
-          docker compose exec -T mongo sh -c "mongosh --eval 'db.serverStatus()'"
+          docker compose exec -T mongo sh -c "mongosh --username rootUser --password rootPassword --authenticationDatabase admin --eval 'db.serverStatus()'"
       
       - name: Curl on laravel app
         run: docker-compose exec laravel-app sh -c "curl mongo-db:27017"    
