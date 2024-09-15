@@ -23,7 +23,6 @@ jobs:
       - name: Build and run Docker container
         run: |
           cp .env.example .env
-          echo "APP_KEY=base64:OtNGO9Be3wJoxR2UG27/AWlRwXapX+W7X0+fpI8K3B0=" >> .env
           composer install
           docker compose up --build -d
       
