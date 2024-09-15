@@ -23,7 +23,7 @@ jobs:
         run: |
           cp .env.example .env
           composer install
-          docker compose up --build -d
+          docker compose up --build
       - name: Await for mongo and redis to start
         run: |
           sleep 10
