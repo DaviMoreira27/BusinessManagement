@@ -29,7 +29,7 @@ jobs:
           sleep 60
       - name: Check MongoDB container logs
         run: |
-          docker compose wait businessmanagement-mongo-1
+          docker compose wait mongo
           docker compose exec -T businessmanagement-mongo-1 sh -c "mongo --eval 'db.serverStatus()'"
       - name: Set key run migrations
         run: |
