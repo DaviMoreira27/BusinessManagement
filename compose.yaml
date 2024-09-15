@@ -33,7 +33,6 @@ services:
 
   mongo:
     image: mongo:latest
-    
     ports:
       - 27017:27017
     volumes:
@@ -41,7 +40,7 @@ services:
       - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.sh
     env_file: [.env-mongo, .env]
     environment:
-      - MONGODB_HOST=mongo-db
+      - MONGODB_HOST=172.?.?.?
     networks:
       backend:
         aliases:
