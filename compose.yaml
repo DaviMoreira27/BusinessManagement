@@ -40,8 +40,6 @@ services:
       - mongo-data:/data/db
       - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.sh
     env_file: [.env-mongo, .env]
-    environment:
-      - MONGODB_HOST=localhost:27017
     networks:
       backend:
         aliases:
