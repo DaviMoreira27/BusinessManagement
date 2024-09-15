@@ -40,7 +40,7 @@ services:
       - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.sh
     env_file: [.env-mongo, .env]
     environment:
-      - MONGODB_HOST=172.?.?.?
+      - MONGODB_HOST=172.21.0.2
     networks:
       backend:
         aliases:
