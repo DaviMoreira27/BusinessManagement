@@ -1,0 +1,51 @@
+name: App Building and Testing
+run-name: ${{ github.actor }} is testing the application
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  app-setup:
+    runs-on: ubuntu-latest
+    env:
+      UID: 1000
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+      
+      - name: Build and run Docker container
+        run: |
+          cp .env.example .env
+          composer install
+          docker compose up --build -d
+      
+      - name: Await for MongoDB to start
+        run: |
+          until docker compose exec -T mongo sh -c 'mongosh --eval "db.runCommand({ ping: 1 })"'; do
+            echo "Waiting for MongoDB to be ready..."
+            sleep 5
+          done
+
+      - name: Check MongoDB container logs
+        run: |
+          docker compose exec -T mongo sh -c "mongosh --username rootUser --password rootPassword --authenticationDatabase admin --eval 'db.serverStatus()'"
+      
+      - name: Curl on laravel app
+        run: |
+          docker compose exec -T laravel-app sh -c "apt-get update && apt-get install -y netcat-openbsd"
+          docker compose exec -T laravel-app sh -c "nc -zv mongo-db 27017"
+          docker compose exec -T laravel-app sh -c "printenv"
+      - name: Set key run migrations
+        run: |
+          docker compose exec -T laravel-app sh -c "php artisan key:generate && php artisan migrate"
+      
+      - name: Run PHP Unit testing
+        run: |
+          docker compose exec -T laravel-app sh -c "./vendor/bin/phpunit --verbose tests"
