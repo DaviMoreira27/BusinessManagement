@@ -1,14 +1,16 @@
-name: App Deployment
-run-name: ${{ github.actor }} is deploying the application
+name: App Building and Testing
+run-name: ${{ github.actor }} is testing the application
 on:
   push:
     branches: [main]
-  pull-request:
+  pull_request:
     branches: [main]
 
 jobs:
-  app-setup:
+  app-testing:
     runs-on: ubuntu-latest
+    env:
+      UID: 1000
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -16,14 +18,38 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.x'
-
+          php-version: '8.1'
+      
       - name: Build and run Docker container
         run: |
-          docker-compose up --build -d
-          docker-compose exec -T laravel-app sh -c "php artisan key:generate && php artisan migrate"
+          cp .env.example .env
+          sed -i 's|^APP_KEY=.*|APP_KEY=base64:OtNGO9Be3wJoxR2UG27/AWlRwXapX+W7X0+fpI8K3B0=|' .env
+          composer install
+          docker compose up --build -d
+      
+      - name: Await for MongoDB to start
+        run: |
+          until docker compose exec -T mongo sh -c 'mongosh --eval "db.runCommand({ ping: 1 })"'; do
+            echo "Waiting for MongoDB to be ready..."
+            sleep 5
+          done
+      
+      - name: Curl on laravel app
+        run: |
+          sleep 10
+          docker compose exec -T laravel-app sh -c "apt-get update && apt-get install -y netcat-openbsd"
+          docker compose exec -T laravel-app sh -c "nc -zv mongo-db 27017"
+
+      - name: Set key run migrations
+        run: |
+          docker compose exec -T laravel-app sh -c "php artisan key:generate && php artisan migrate"
+          docker compose exec -T laravel-app sh -c "cat .env | grep APP_KEY"
+
+      - name: Clean config and cache
+        run: |
+          docker compose exec -T laravel-app sh -c "php artisan config:clear"
+          docker compose exec -T laravel-app sh -c "php artisan cache:clear"
       
       - name: Run PHP Unit testing
         run: |
-          docker-compose exec -T laravel-app sh -c "./vendor/bin/phpunit --verbose tests"
-
+          docker compose exec -T laravel-app sh -c "php artisan test"
