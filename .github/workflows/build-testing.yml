@@ -36,6 +36,7 @@ jobs:
       
       - name: Curl on laravel app
         run: |
+          sleep 10
           docker compose exec -T laravel-app sh -c "apt-get update && apt-get install -y netcat-openbsd"
           docker compose exec -T laravel-app sh -c "nc -zv mongo-db 27017"
 
