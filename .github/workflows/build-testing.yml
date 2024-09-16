@@ -53,4 +53,5 @@ jobs:
       - name: Run PHP Unit testing
         run: |
           docker compose exec -T laravel-app sh -c "printenv"
+          docker compose exec -T laravel-app sh -c "php artisan serve"
           docker compose exec -T laravel-app sh -c "php artisan test"
