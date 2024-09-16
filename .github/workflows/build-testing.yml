@@ -34,16 +34,9 @@ jobs:
             sleep 5
           done
       
-      - name: Curl on laravel app
-        run: |
-          docker compose exec -T laravel-app sh -c "apt-get update && apt-get install -y netcat-openbsd"
-          docker compose exec -T laravel-app sh -c "nc -zv mongo-db 27017"
-          docker compose exec -T laravel-app sh -c "printenv"
-
       - name: Set key run migrations
         run: |
           docker compose exec -T laravel-app sh -c "php artisan key:generate && php artisan migrate"
-          docker compose exec -T laravel-app sh -c "cat .env | grep APP_KEY"
 
       - name: Clean config and cache
         run: |
@@ -52,5 +45,4 @@ jobs:
       
       - name: Run PHP Unit testing
         run: |
-          docker compose exec -T laravel-app sh -c "printenv"
           docker compose exec -T laravel-app sh -c "php artisan test"
